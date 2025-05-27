@@ -1,0 +1,52 @@
+{% extends 'news/base.html' %}
+{% load static %}
+{% block content %}
+    <div id="carouselExample" class="carousel slide mb-4">
+        <div class="carousel-inner">
+            {% for article in featured_articles %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    {% if article.video %}
+                        <video class="d-block w-100" style="height: 400px; object-fit: cover;" muted>
+                            <source src="{{ article.video.url }}" type="video/mp4">
+                            <source src="{{ article.video.url }}" type="video/webm">
+                            <source src="{{ article.video.url }}" type="video/ogg">
+                            <img src="{% static 'images/placeholder.jpg' %}" class="d-block w-100" alt="Video not supported">
+                        </video>
+                    {% else %}
+                        <img src="{{ article.image.url|default:'/static/images/placeholder.jpg' }}" class="d-block w-100" alt="{{ article.title }}">
+                    {% endif %}
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>{{ article.title }}</h5>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <h2>Latest News</h2>
+    <div class="row">
+        {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top" alt="{{ article.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">{{ article.content|truncatewords:30 }}</p>
+                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
